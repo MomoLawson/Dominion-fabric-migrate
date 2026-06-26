@@ -1,8 +1,45 @@
-build/
+# Gradle
 .gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
 .idea/
 *.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+
+# Java
+*.class
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Minecraft
 run/
+logs/
+world/
+*.dat
+server.properties
+ops.json
+whitelist.json
+banned-ips.json
+banned-players.json
+eula.txt
+
+# Config (generated at runtime)
+config/dominion/
+
+# Version properties (auto-generated)
 .version.properties
+version.properties
+
+# Build artifacts
+*.zip
+*.tar.gz

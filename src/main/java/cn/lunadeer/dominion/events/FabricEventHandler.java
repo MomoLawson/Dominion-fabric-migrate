@@ -280,9 +280,53 @@ public class FabricEventHandler {
         XLogger.info("Comprehensive event handlers registered (80+ protection types matching original)");
     }
 
-    private static boolean isShulkerBox(Block block) { return block.toString().toLowerCase().contains("shulker_box"); }
-    private static boolean isBed(Block block) { return block.toString().toLowerCase().contains("_bed"); }
-    private static boolean isButton(Block block) { return block.toString().toLowerCase().contains("button"); }
-    private static boolean isDoor(Block block) { String n = block.toString().toLowerCase(); return n.contains("door") || n.contains("trapdoor") || n.contains("fence_gate"); }
-    private static boolean isPressurePlate(Block block) { return block.toString().toLowerCase().contains("pressure_plate"); }
+    private static boolean isShulkerBox(Block block) {
+        return block == Blocks.SHULKER_BOX || block == Blocks.BLACK_SHULKER_BOX || block == Blocks.BLUE_SHULKER_BOX
+            || block == Blocks.BROWN_SHULKER_BOX || block == Blocks.CYAN_SHULKER_BOX || block == Blocks.GRAY_SHULKER_BOX
+            || block == Blocks.GREEN_SHULKER_BOX || block == Blocks.LIGHT_BLUE_SHULKER_BOX || block == Blocks.LIGHT_GRAY_SHULKER_BOX
+            || block == Blocks.LIME_SHULKER_BOX || block == Blocks.MAGENTA_SHULKER_BOX || block == Blocks.ORANGE_SHULKER_BOX
+            || block == Blocks.PINK_SHULKER_BOX || block == Blocks.RED_SHULKER_BOX || block == Blocks.WHITE_SHULKER_BOX
+            || block == Blocks.YELLOW_SHULKER_BOX;
+    }
+
+    private static boolean isBed(Block block) {
+        return block == Blocks.RED_BED || block == Blocks.ORANGE_BED || block == Blocks.YELLOW_BED
+            || block == Blocks.LIME_BED || block == Blocks.GREEN_BED || block == Blocks.CYAN_BED
+            || block == Blocks.LIGHT_BLUE_BED || block == Blocks.BLUE_BED || block == Blocks.PURPLE_BED
+            || block == Blocks.MAGENTA_BED || block == Blocks.PINK_BED || block == Blocks.WHITE_BED
+            || block == Blocks.LIGHT_GRAY_BED || block == Blocks.GRAY_BED || block == Blocks.BLACK_BED
+            || block == Blocks.BROWN_BED;
+    }
+
+    private static boolean isButton(Block block) {
+        return block == Blocks.STONE_BUTTON || block == Blocks.OAK_BUTTON || block == Blocks.BIRCH_BUTTON
+            || block == Blocks.SPRUCE_BUTTON || block == Blocks.JUNGLE_BUTTON || block == Blocks.ACACIA_BUTTON
+            || block == Blocks.DARK_OAK_BUTTON || block == Blocks.MANGROVE_BUTTON || block == Blocks.CHERRY_BUTTON
+            || block == Blocks.BAMBOO_BUTTON || block == Blocks.CRIMSON_BUTTON || block == Blocks.WARPED_BUTTON
+            || block == Blocks.POLISHED_BLACKSTONE_BUTTON;
+    }
+
+    private static boolean isDoor(Block block) {
+        return block == Blocks.OAK_DOOR || block == Blocks.BIRCH_DOOR || block == Blocks.SPRUCE_DOOR
+            || block == Blocks.JUNGLE_DOOR || block == Blocks.ACACIA_DOOR || block == Blocks.DARK_OAK_DOOR
+            || block == Blocks.MANGROVE_DOOR || block == Blocks.CHERRY_DOOR || block == Blocks.BAMBOO_DOOR
+            || block == Blocks.CRIMSON_DOOR || block == Blocks.WARPED_DOOR || block == Blocks.IRON_DOOR
+            || block == Blocks.OAK_TRAPDOOR || block == Blocks.BIRCH_TRAPDOOR || block == Blocks.SPRUCE_TRAPDOOR
+            || block == Blocks.JUNGLE_TRAPDOOR || block == Blocks.ACACIA_TRAPDOOR || block == Blocks.DARK_OAK_TRAPDOOR
+            || block == Blocks.MANGROVE_TRAPDOOR || block == Blocks.CHERRY_TRAPDOOR || block == Blocks.BAMBOO_TRAPDOOR
+            || block == Blocks.CRIMSON_TRAPDOOR || block == Blocks.WARPED_TRAPDOOR || block == Blocks.IRON_TRAPDOOR
+            || block == Blocks.OAK_FENCE_GATE || block == Blocks.BIRCH_FENCE_GATE || block == Blocks.SPRUCE_FENCE_GATE
+            || block == Blocks.JUNGLE_FENCE_GATE || block == Blocks.ACACIA_FENCE_GATE || block == Blocks.DARK_OAK_FENCE_GATE
+            || block == Blocks.MANGROVE_FENCE_GATE || block == Blocks.CHERRY_FENCE_GATE || block == Blocks.BAMBOO_FENCE_GATE
+            || block == Blocks.CRIMSON_FENCE_GATE || block == Blocks.WARPED_FENCE_GATE;
+    }
+
+    private static boolean isPressurePlate(Block block) {
+        return block == Blocks.STONE_PRESSURE_PLATE || block == Blocks.OAK_PRESSURE_PLATE
+            || block == Blocks.BIRCH_PRESSURE_PLATE || block == Blocks.SPRUCE_PRESSURE_PLATE
+            || block == Blocks.JUNGLE_PRESSURE_PLATE || block == Blocks.ACACIA_PRESSURE_PLATE
+            || block == Blocks.DARK_OAK_PRESSURE_PLATE || block == Blocks.MANGROVE_PRESSURE_PLATE
+            || block == Blocks.CHERRY_PRESSURE_PLATE || block == Blocks.BAMBOO_PRESSURE_PLATE
+            || block == Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE || block == Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE;
+    }
 }

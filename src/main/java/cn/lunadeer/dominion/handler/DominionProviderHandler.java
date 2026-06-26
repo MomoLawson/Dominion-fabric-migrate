@@ -73,6 +73,26 @@ public class DominionProviderHandler extends DominionProvider {
                     throw new DominionException("Dominion name '" + name + "' already exists");
                 }
 
+                // Size validation
+                int volume = (cuboid.x2() - cuboid.x1()) * (cuboid.y2() - cuboid.y1()) * (cuboid.z2() - cuboid.z1());
+                if (volume > 100_000_000) {
+                    throw new DominionException("Dominion too large (max 100M blocks)");
+                }
+                if (volume <= 0) {
+                    throw new DominionException("Invalid dominion size");
+                }
+
+                // Economy check (if enabled and not skipped)
+                if (!skipEconomy && cn.lunadeer.dominion.utils.VaultConnect.VaultConnect.isEnabled()) {
+                    double pricePerBlock = 0.01;
+                    double totalCost = volume * pricePerBlock;
+                    double balance = cn.lunadeer.dominion.utils.VaultConnect.VaultConnect.getBalance(owner);
+                    if (balance < totalCost) {
+                        throw new DominionException("Insufficient funds. Need " + String.format("%.2f", totalCost) + ", have " + String.format("%.2f", balance));
+                    }
+                    cn.lunadeer.dominion.utils.VaultConnect.VaultConnect.withdrawPlayer(owner, totalCost);
+                }
+
                 // Create dominion with all properties
                 Integer parentDomId = parent != null ? parent.getId() : -1;
                 DominionDOO toBeCreated = new DominionDOO(owner, name, worldUid, cuboid, parentDomId);
