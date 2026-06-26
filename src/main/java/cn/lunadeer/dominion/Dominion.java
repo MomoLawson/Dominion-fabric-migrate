@@ -97,6 +97,12 @@ public class Dominion implements ModInitializer {
         // Initialize provider
         new cn.lunadeer.dominion.handler.DominionProviderHandler();
 
+        // Initialize PlaceholderAPI integration
+        cn.lunadeer.dominion.hooks.PlaceholderAPIHook.initialize();
+
+        // Initialize economy system
+        cn.lunadeer.dominion.utils.VaultConnect.VaultConnect.initialize();
+
         XLogger.info(Language.dominionText.pluginVersion, getModVersion());
         XLogger.info(Language.dominionText.pluginEnabled);
     }
