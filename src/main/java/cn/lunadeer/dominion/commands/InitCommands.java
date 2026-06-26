@@ -266,7 +266,24 @@ public class InitCommands {
                     .then(Commands.argument("player", StringArgumentType.greedyString())
                         .suggests((ctx, builder) -> { suggestPlayers(ctx, builder); return builder.buildFuture(); })
                         .executes(ctx -> {
-                            Notification.info(ctx.getSource(), "Member added (use UI for full management)");
+                            try {
+                                String domName = StringArgumentType.getString(ctx, "dominion");
+                                String playerName = StringArgumentType.getString(ctx, "player");
+                                DominionDTO d = Converts.toDominionDTO(domName);
+                                UUID playerUuid = Converts.toPlayerUuid(playerName);
+                                if (d == null) { Notification.error(ctx.getSource(), "Dominion not found"); return 0; }
+                                if (playerUuid == null) { Notification.error(ctx.getSource(), "Player not found: " + playerName); return 0; }
+                                // Check if already a member
+                                MemberDOO existing = cn.lunadeer.dominion.cache.CacheManager.instance.getMember(d, playerUuid) != null ? (MemberDOO) cn.lunadeer.dominion.cache.CacheManager.instance.getMember(d, playerUuid) : null;
+                                if (existing != null) { Notification.error(ctx.getSource(), playerName + " is already a member"); return 0; }
+                                MemberDOO newMember = new MemberDOO(d.getId(), playerUuid);
+                                MemberDOO result = MemberDOO.insert(newMember);
+                                if (result != null) {
+                                    Notification.info(ctx.getSource(), "Added " + playerName + " as member of " + d.getName());
+                                } else {
+                                    Notification.error(ctx.getSource(), "Failed to add member");
+                                }
+                            } catch (Exception e) { Notification.error(ctx.getSource(), e); }
                             return Command.SINGLE_SUCCESS;
                         })
                     )
@@ -280,7 +297,18 @@ public class InitCommands {
                     .suggests((ctx, builder) -> { suggestDominions(ctx, builder); return builder.buildFuture(); })
                     .then(Commands.argument("player", StringArgumentType.greedyString())
                         .executes(ctx -> {
-                            Notification.info(ctx.getSource(), "Member removed (use UI for full management)");
+                            try {
+                                String domName = StringArgumentType.getString(ctx, "dominion");
+                                String playerName = StringArgumentType.getString(ctx, "player");
+                                DominionDTO d = Converts.toDominionDTO(domName);
+                                UUID playerUuid = Converts.toPlayerUuid(playerName);
+                                if (d == null) { Notification.error(ctx.getSource(), "Dominion not found"); return 0; }
+                                if (playerUuid == null) { Notification.error(ctx.getSource(), "Player not found: " + playerName); return 0; }
+                                MemberDTO member = cn.lunadeer.dominion.cache.CacheManager.instance.getMember(d, playerUuid);
+                                if (member == null) { Notification.error(ctx.getSource(), playerName + " is not a member"); return 0; }
+                                MemberDOO.deleteById(member.getId());
+                                Notification.info(ctx.getSource(), "Removed " + playerName + " from " + d.getName());
+                            } catch (Exception e) { Notification.error(ctx.getSource(), e); }
                             return Command.SINGLE_SUCCESS;
                         })
                     )
@@ -294,10 +322,41 @@ public class InitCommands {
                     .suggests((ctx, builder) -> { suggestDominions(ctx, builder); return builder.buildFuture(); })
                     .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(ctx -> {
-                            String domName = StringArgumentType.getString(ctx, "dominion");
-                            String name = StringArgumentType.getString(ctx, "name");
-                            DominionDTO d = Converts.toDominionDTO(domName);
-                            if (d != null) { GroupDOO.create(name, d); Notification.info(ctx.getSource(), "Group " + name + " created"); }
+                            try {
+                                String domName = StringArgumentType.getString(ctx, "dominion");
+                                String name = StringArgumentType.getString(ctx, "name");
+                                DominionDTO d = Converts.toDominionDTO(domName);
+                                if (d == null) { Notification.error(ctx.getSource(), "Dominion not found"); return 0; }
+                                GroupDOO group = GroupDOO.create(name, d);
+                                if (group != null) {
+                                    Notification.info(ctx.getSource(), "Group '" + name + "' created in " + d.getName());
+                                } else {
+                                    Notification.error(ctx.getSource(), "Failed to create group");
+                                }
+                            } catch (Exception e) { Notification.error(ctx.getSource(), e); }
+                            return Command.SINGLE_SUCCESS;
+                        })
+                    )
+                )
+            );
+
+            // /dominion group_delete <dominion> <group>
+            root.then(Commands.literal("group_delete")
+                .requires(src -> src.getPlayer() != null)
+                .then(Commands.argument("dominion", StringArgumentType.word())
+                    .suggests((ctx, builder) -> { suggestDominions(ctx, builder); return builder.buildFuture(); })
+                    .then(Commands.argument("group", StringArgumentType.greedyString())
+                        .executes(ctx -> {
+                            try {
+                                String domName = StringArgumentType.getString(ctx, "dominion");
+                                String groupName = StringArgumentType.getString(ctx, "group");
+                                DominionDTO d = Converts.toDominionDTO(domName);
+                                if (d == null) { Notification.error(ctx.getSource(), "Dominion not found"); return 0; }
+                                GroupDTO group = Converts.toGroupDTO(d, groupName);
+                                if (group == null) { Notification.error(ctx.getSource(), "Group not found: " + groupName); return 0; }
+                                GroupDOO.deleteById(group.getId());
+                                Notification.info(ctx.getSource(), "Group '" + groupName + "' deleted from " + d.getName());
+                            } catch (Exception e) { Notification.error(ctx.getSource(), e); }
                             return Command.SINGLE_SUCCESS;
                         })
                     )
