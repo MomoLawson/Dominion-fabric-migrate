@@ -1,0 +1,30 @@
+{
+    "schemaVersion": 1,
+    "id": "dominion",
+    "version": "${version}",
+    "name": "Dominion",
+    "description": "A completely open-source, free, future-proof territory anti-grief mod for Minecraft servers.",
+    "authors": [
+        "LunaDeerMC",
+        "zhangyuheng"
+    ],
+    "contact": {
+        "homepage": "https://dominion.lunadeer.cn/",
+        "sources": "https://github.com/LunaDeerMC/Dominion"
+    },
+    "license": "GPL-3.0",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "cn.lunadeer.dominion.Dominion"
+        ]
+    },
+    "mixins": [
+        "dominion.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.19.0",
+        "minecraft": "~26.1",
+        "fabric-api": "*"
+    }
+}

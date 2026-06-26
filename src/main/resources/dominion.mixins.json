@@ -1,0 +1,13 @@
+{
+    "required": true,
+    "package": "cn.lunadeer.dominion.mixin",
+    "compatibilityLevel": "JAVA_25",
+    "mixins": [
+        "ExplosionMixin"
+    ],
+    "client": [
+    ],
+    "injectors": {
+        "defaultRequire": 0
+    }
+}
