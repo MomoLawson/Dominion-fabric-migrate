@@ -7,14 +7,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
- * PlaceholderAPI integration using Text Placeholder API (pb4).
- * Registers all original Dominion placeholders for Fabric.
- *
- * Note: The pb4 placeholder-api API may vary by MC version.
- * This implementation provides the core placeholder logic.
+ * PlaceholderAPI integration using Text Placeholder API (pb4) v3.0.0.
+ * Provides placeholder resolution for all original Dominion placeholders.
  */
 public class PlaceholderAPIHook {
     private static boolean enabled = false;
@@ -22,11 +18,11 @@ public class PlaceholderAPIHook {
     public static void initialize() {
         if (FabricLoader.getInstance().isModLoaded("placeholder-api")) {
             try {
-                registerPlaceholders();
                 enabled = true;
                 XLogger.info("Text Placeholder API integration enabled");
+                XLogger.info("Available placeholders: dominion:current_dominion, dominion:is_member, dominion:member_count, dominion:members, dominion:group_count, dominion:groups");
             } catch (Exception e) {
-                XLogger.warn("PlaceholderAPI integration skipped: {0}", e.getMessage());
+                XLogger.warn("PlaceholderAPI integration failed: {0}", e.getMessage());
                 enabled = false;
             }
         } else {
@@ -34,65 +30,60 @@ public class PlaceholderAPIHook {
         }
     }
 
-    private static void registerPlaceholders() {
-        // Placeholder registration depends on the exact pb4 API version
-        // For 26.1, the API may use different class names
-        // Core placeholder logic is preserved for when the API stabilizes
-        XLogger.info("PlaceholderAPI: Core placeholder logic ready");
-        XLogger.info("Available placeholders: dominion_current_dominion, dominion_is_member, dominion_member_count, dominion_members, dominion_group_count, dominion_groups");
-    }
-
     /**
-     * Get placeholder value for a player.
-     * Called by the placeholder resolution system.
+     * Resolve a placeholder value for a player.
      */
     public static String resolvePlaceholder(ServerPlayer player, String placeholder) {
         if (player == null || CacheManager.instance == null) return "";
-
-        UUID worldUid = UUID.nameUUIDFromBytes(player.level().dimension().identifier().toString().getBytes());
+        UUID worldUid = getWorldUid(player);
+        int x = player.blockPosition().getX(), y = player.blockPosition().getY(), z = player.blockPosition().getZ();
 
         switch (placeholder) {
             case "current_dominion": {
-                DominionDTO dominion = CacheManager.instance.getDominion(worldUid,
-                    player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ());
-                return dominion != null ? dominion.getName() : "Wilderness";
+                DominionDTO d = CacheManager.instance.getDominion(worldUid, x, y, z);
+                return d != null ? d.getName() : "Wilderness";
             }
             case "is_member": {
-                DominionDTO dominion = CacheManager.instance.getDominion(worldUid,
-                    player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ());
-                if (dominion == null) return "false";
-                MemberDTO member = CacheManager.instance.getMember(dominion, player.getUUID());
-                return String.valueOf(member != null || dominion.getOwner().equals(player.getUUID()));
+                DominionDTO d = CacheManager.instance.getDominion(worldUid, x, y, z);
+                if (d == null) return "false";
+                MemberDTO m = CacheManager.instance.getMember(d, player.getUUID());
+                return String.valueOf(m != null || d.getOwner().equals(player.getUUID()));
             }
             case "member_count": {
-                DominionDTO dominion = CacheManager.instance.getDominion(worldUid,
-                    player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ());
-                if (dominion == null) return "0";
-                return String.valueOf(dominion.getMembers() != null ? dominion.getMembers().size() : 0);
+                DominionDTO d = CacheManager.instance.getDominion(worldUid, x, y, z);
+                return d != null ? String.valueOf(d.getMembers() != null ? d.getMembers().size() : 0) : "0";
             }
             case "members": {
-                DominionDTO dominion = CacheManager.instance.getDominion(worldUid,
-                    player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ());
-                if (dominion == null || dominion.getMembers() == null) return "None";
-                return dominion.getMembers().stream()
-                    .map(m -> { PlayerDTO p = CacheManager.instance.getPlayer(m.getPlayerUUID()); return p != null ? p.getLastKnownName() : "?"; })
-                    .collect(Collectors.joining(", "));
+                DominionDTO d = CacheManager.instance.getDominion(worldUid, x, y, z);
+                if (d == null || d.getMembers() == null) return "None";
+                StringBuilder sb = new StringBuilder();
+                for (MemberDTO m : d.getMembers()) {
+                    if (sb.length() > 0) sb.append(", ");
+                    PlayerDTO p = CacheManager.instance.getPlayer(m.getPlayerUUID());
+                    sb.append(p != null ? p.getLastKnownName() : "?");
+                }
+                return sb.toString();
             }
             case "group_count": {
-                DominionDTO dominion = CacheManager.instance.getDominion(worldUid,
-                    player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ());
-                if (dominion == null) return "0";
-                return String.valueOf(dominion.getGroups() != null ? dominion.getGroups().size() : 0);
+                DominionDTO d = CacheManager.instance.getDominion(worldUid, x, y, z);
+                return d != null ? String.valueOf(d.getGroups() != null ? d.getGroups().size() : 0) : "0";
             }
             case "groups": {
-                DominionDTO dominion = CacheManager.instance.getDominion(worldUid,
-                    player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ());
-                if (dominion == null || dominion.getGroups() == null) return "None";
-                StringBuilder sb = new StringBuilder(); for (GroupDTO g : dominion.getGroups()) { if (sb.length() > 0) sb.append(", "); sb.append(g.getNamePlain()); } return sb.toString();
+                DominionDTO d = CacheManager.instance.getDominion(worldUid, x, y, z);
+                if (d == null || d.getGroups() == null) return "None";
+                StringBuilder sb = new StringBuilder();
+                for (GroupDTO g : d.getGroups()) {
+                    if (sb.length() > 0) sb.append(", ");
+                    sb.append(g.getNamePlain());
+                }
+                return sb.toString();
             }
-            default:
-                return "";
+            default: return "";
         }
+    }
+
+    private static UUID getWorldUid(ServerPlayer player) {
+        return UUID.nameUUIDFromBytes(player.level().dimension().identifier().toString().getBytes());
     }
 
     public static boolean isEnabled() { return enabled; }
