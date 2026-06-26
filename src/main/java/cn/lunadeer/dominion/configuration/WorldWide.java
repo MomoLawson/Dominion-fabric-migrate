@@ -35,7 +35,7 @@ public class WorldWide {
     }
 
     public static boolean isWorldWideEnabled(ServerLevel world) {
-        return isWorldWideEnabled(world.dimension().location().toString());
+        return isWorldWideEnabled(world.dimension().identifier().toString());
     }
 
     public static @Nullable Map<String, Boolean> getEnvironmentFlagValues(String worldName) {
@@ -97,7 +97,7 @@ public class WorldWide {
         // and read/write flag values from/to yamlData.
 
         // Save back
-        ConfigurationManager.saveYamlFile(worldWideFile, yamlData);
+        try { ConfigurationManager.saveYamlFile(worldWideFile, yamlData); } catch (Exception e) { e.printStackTrace(); }
     }
 
     /**

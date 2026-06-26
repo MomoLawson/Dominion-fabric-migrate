@@ -82,6 +82,7 @@ shadowJar {
     archiveFileName.set("dominion-${project.version}.jar")
     configurations = [project.configurations.runtimeClasspath]
     mergeServiceFiles()
+    zip64 = true
 }
 
 // For unmapped 26.1, remapJar may not be needed

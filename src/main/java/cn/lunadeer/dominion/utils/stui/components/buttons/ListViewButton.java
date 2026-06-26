@@ -51,7 +51,7 @@ public class ListViewButton extends PermissionButton {
             FUNCTION_MAP.put(uuid, function);
         }
         String command = CommandManager.getRootCommand() + " _tui_lsv_btn " + uuid + " " + page;
-        ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, command);
+        ClickEvent click = new ClickEvent.RunCommand(command);
         return buildGeneric(click);
     }
 }

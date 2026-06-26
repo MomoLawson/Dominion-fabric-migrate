@@ -37,7 +37,7 @@ public class WorldLoadHandler {
         // Delay to let worlds finish loading, then run callbacks on all loaded worlds
         server.execute(() -> {
             for (ServerLevel world : server.getAllLevels()) {
-                String worldKey = world.dimension().location().toString();
+                String worldKey = world.dimension().identifier().toString();
                 if (loadedWorlds.contains(worldKey)) continue;
                 loadedWorlds.add(worldKey);
                 for (Consumer<ServerLevel> runner : runners) {
@@ -61,7 +61,7 @@ public class WorldLoadHandler {
         // If server is already started, run on all current worlds
         if (Dominion.server != null) {
             for (ServerLevel world : Dominion.server.getAllLevels()) {
-                String worldKey = world.dimension().location().toString();
+                String worldKey = world.dimension().identifier().toString();
                 if (!loadedWorlds.contains(worldKey)) {
                     loadedWorlds.add(worldKey);
                 }

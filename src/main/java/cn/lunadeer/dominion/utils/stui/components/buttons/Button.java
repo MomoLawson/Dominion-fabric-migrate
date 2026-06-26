@@ -7,40 +7,19 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 
-/**
- * Fabric port of Button. Builds a clickable MutableComponent element with
- * hover and click events using Minecraft's native text API.
- */
 public abstract class Button {
     protected String text;
     protected String hover;
     protected boolean disabled;
-    protected Style color = ViewStyles.ACTION;
+    protected TextColor color = ViewStyles.ACTION;
 
     public Button() {}
 
-    public Button setText(String text) {
-        this.text = text;
-        return this;
-    }
-
-    public Button setHover(String hover) {
-        this.hover = hover;
-        return this;
-    }
-
-    public Button setDisabled(boolean disabled) {
-        this.disabled = disabled;
-        return this;
-    }
-
-    public Button setColor(Style color) {
-        this.color = color;
-        return this;
-    }
+    public Button setText(String text) { this.text = text; return this; }
+    public Button setHover(String hover) { this.hover = hover; return this; }
+    public Button setDisabled(boolean disabled) { this.disabled = disabled; return this; }
+    public Button setColor(TextColor color) { this.color = color; return this; }
 
     public abstract MutableComponent build();
 
@@ -53,7 +32,7 @@ public abstract class Button {
         }
 
         if (hover != null && !hover.isEmpty()) {
-            style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(hover)));
+            style = style.withHoverEvent(new HoverEvent.ShowText(Component.literal(hover)));
         }
 
         if (!disabled && clickEvent != null) {

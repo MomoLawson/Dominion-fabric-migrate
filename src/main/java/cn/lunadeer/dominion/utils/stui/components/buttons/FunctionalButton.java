@@ -52,7 +52,7 @@ public class FunctionalButton extends PermissionButton {
             FUNCTION_MAP.put(uuid, function);
         }
         String command = CommandManager.getRootCommand() + " _tui_btn " + uuid;
-        ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, command);
+        ClickEvent click = new ClickEvent.RunCommand(command);
         return buildGeneric(click);
     }
 }

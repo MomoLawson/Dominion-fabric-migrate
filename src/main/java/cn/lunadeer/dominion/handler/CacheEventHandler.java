@@ -14,7 +14,7 @@ public class CacheEventHandler {
 
     public static void onPlayerMove(ServerPlayer player, int x, int y, int z) {
         UUID playerUuid = player.getUUID();
-        UUID worldUid = UUID.nameUUIDFromBytes(player.level().dimension().location().toString().getBytes());
+        UUID worldUid = UUID.nameUUIDFromBytes(player.level().dimension().identifier().toString().getBytes());
         int currentDomId = CacheManager.instance.getPlayerCurrentDomId(playerUuid);
         DominionDTO newDom = CacheManager.instance.getDominion(worldUid, x, y, z);
         int newDomId = newDom != null ? newDom.getId() : 0;

@@ -238,7 +238,7 @@ public class Limitation extends ConfigurationFile {
 
     /**
      * Get world limitation settings by world identifier string.
-     * In Fabric, use world.dimension().location().toString() as the identifier.
+     * In Fabric, use world.dimension().identifier().toString() as the identifier.
      */
     public @NotNull WorldLimitationSetting getWorldSettings(@NotNull String worldIdentifier) {
         return worldLimitations.getOrDefault(worldIdentifier, worldLimitations.get("default"));

@@ -88,7 +88,7 @@ public class DatabaseManager {
                 .dataSource(dataSource)
                 .baselineOnMigrate(true)
                 .baselineVersion("0")
-                .javaMigrations(new V1__LegacySchema(type))
+                .javaMigrations()
                 .load()
                 .migrate();
         FlagReconciler.SyncResult result = new FlagReconciler(dataSource(), type).reconcile();

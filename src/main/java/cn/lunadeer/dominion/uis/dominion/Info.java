@@ -1,9 +1,9 @@
-package cn.lunadeer.dominion.uis.dominion.manage.group;
+package cn.lunadeer.dominion.uis.dominion;
 import cn.lunadeer.dominion.uis.AbstractUI;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.commands.CommandSourceStack;
-public class GroupFlags extends AbstractUI {
-    public static void show(CommandSourceStack source, String... args) { new GroupFlags().displayByPreference(source, args); }
+public class Info extends AbstractUI {
+    public static void show(CommandSourceStack source, String... args) { new Info().displayByPreference(source, args); }
     protected void showTUI(ServerPlayer player, String... args) {}
     protected void showCUI(ServerPlayer player, String... args) { showTUI(player, args); }
     protected void showConsole(CommandSourceStack sender, String... args) {}

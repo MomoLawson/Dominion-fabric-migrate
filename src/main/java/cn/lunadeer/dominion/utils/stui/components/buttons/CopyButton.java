@@ -18,7 +18,7 @@ public class CopyButton extends PermissionButton {
 
     @Override
     public MutableComponent build() {
-        ClickEvent click = new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, copyText);
+        ClickEvent click = new ClickEvent.CopyToClipboard(copyText);
         return buildGeneric(click);
     }
 }

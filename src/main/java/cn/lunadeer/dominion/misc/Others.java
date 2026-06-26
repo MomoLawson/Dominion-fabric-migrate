@@ -25,7 +25,7 @@ public class Others {
     }
 
     public static boolean checkPrivilegeFlag(UUID worldUid, int x, int y, int z, PriFlag flag, ServerPlayer player) {
-        if (!flag.isEnabled()) return true;
+        if (!flag.getEnable()) return true;
         if (player != null && PermissionHelper.hasPermissionLevel(player, 4) && Configuration.adminBypass) return true;
         DominionDTO dominion = CacheManager.instance.getDominion(worldUid, x, y, z);
         if (dominion == null) return true;
@@ -34,7 +34,7 @@ public class Others {
     }
 
     public static boolean checkEnvironmentFlag(UUID worldUid, int x, int y, int z, EnvFlag flag) {
-        if (!flag.isEnabled()) return true;
+        if (!flag.getEnable()) return true;
         DominionDTO dominion = CacheManager.instance.getDominion(worldUid, x, y, z);
         if (dominion == null) return true;
         return dominion.isEnvFlag(flag.getFlagName());

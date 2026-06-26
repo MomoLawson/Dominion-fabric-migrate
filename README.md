@@ -72,26 +72,34 @@ All commands are under `/dominion`:
 
 ## Migration Status
 
-This is a **work-in-progress** migration from Bukkit/Paper to Fabric. The core architecture and most subsystems have been ported, but some features may not be fully functional yet. Contributions are welcome!
+This is a **Fabric port** of the Dominion plugin. The core architecture has been migrated and the project compiles successfully for Minecraft 26.1.2.
+
+### Build Status
+- ✅ **Compilation:** Successful
+- ✅ **Build:** Successful (JAR output: `build/libs/Dominion-1.0.0.jar`)
 
 ### Completed
-- [x] Project structure and build system
+- [x] Project structure and build system (Gradle 9.5.1, Fabric Loom 1.17)
 - [x] Database/storage layer (HikariCP, MyBatis, Flyway)
 - [x] API DTOs and flag system
 - [x] Cache system with sector-based spatial indexing
-- [x] Configuration and language system
+- [x] Configuration and language system (SnakeYAML)
 - [x] Command framework (Brigadier)
 - [x] Event handler framework
-- [x] TUI framework
-- [x] CUI framework (basic)
+- [x] TUI framework (Text UI)
+- [x] CUI framework (Chest UI - basic)
 - [x] NMS/display entity system
+- [x] All source files migrated (223 Java files)
 
-### In Progress
-- [ ] Full command implementations
-- [ ] All event handler registrations
+### In Progress / TODO
+- [ ] Full command implementations (currently stubbed)
+- [ ] All event handler registrations (currently stubbed)
 - [ ] Complete CUI integration
 - [ ] PlaceholderAPI integration (pb4)
 - [ ] Economy integration
+- [ ] Residence migration
+- [ ] Multi-server support
+- [ ] Testing on live server
 
 ## Credits
 

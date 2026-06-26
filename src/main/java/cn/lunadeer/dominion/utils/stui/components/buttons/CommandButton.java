@@ -17,7 +17,7 @@ public class CommandButton extends PermissionButton {
 
     @Override
     public MutableComponent build() {
-        ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, command);
+        ClickEvent click = new ClickEvent.RunCommand(command);
         return buildGeneric(click);
     }
 }

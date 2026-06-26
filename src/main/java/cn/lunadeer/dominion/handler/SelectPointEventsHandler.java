@@ -23,7 +23,7 @@ public class SelectPointEventsHandler {
     }
 
     public static void handleInfoTool(ServerPlayer player, ServerLevel level, BlockPos pos) {
-        DominionDTO dominion = CacheManager.instance.getDominion(level.dimension().location().toString(), pos.getX(), pos.getY(), pos.getZ());
+        DominionDTO dominion = CacheManager.instance.getDominion(UUID.nameUUIDFromBytes(level.dimension().identifier().toString().getBytes()), pos.getX(), pos.getY(), pos.getZ());
         if (dominion != null) XLogger.info("Dominion: {0}", dominion.getName());
     }
 }

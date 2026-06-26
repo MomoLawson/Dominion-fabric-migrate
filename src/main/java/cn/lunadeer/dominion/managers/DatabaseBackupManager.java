@@ -74,7 +74,7 @@ public class DatabaseBackupManager {
         try {
             Map<String, String> worldUidMap = new HashMap<>();
             for (ServerLevel world : server.getAllLevels()) {
-                worldUidMap.put(world.dimension().location().toString(), world.dimension().location().toString());
+                worldUidMap.put(world.dimension().identifier().toString(), world.dimension().identifier().toString());
             }
             Map<String, Object> yamlData = new LinkedHashMap<>();
             for (Map.Entry<String, String> entry : worldUidMap.entrySet()) {
@@ -100,7 +100,7 @@ public class DatabaseBackupManager {
         XLogger.info(Language.databaseManagerText.importingDatabase);
         Map<String, String> worldUidMap = new HashMap<>();
         for (ServerLevel world : server.getAllLevels()) {
-            worldUidMap.put(world.dimension().location().toString(), world.dimension().location().toString());
+            worldUidMap.put(world.dimension().identifier().toString(), world.dimension().identifier().toString());
         }
         for (String tableName : REQUIRED_IMPORT_TABLES) {
             if (!new File(export_path, tableName + ".csv").exists()) {
