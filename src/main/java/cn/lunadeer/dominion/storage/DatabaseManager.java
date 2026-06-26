@@ -1,6 +1,7 @@
 package cn.lunadeer.dominion.storage;
 
 import cn.lunadeer.dominion.Dominion;
+import cn.lunadeer.dominion.utils.XLogger;
 import cn.lunadeer.dominion.storage.mapper.GenericMapper;
 import cn.lunadeer.dominion.storage.migration.V1__LegacySchema;
 import com.zaxxer.hikari.HikariConfig;
@@ -84,16 +85,36 @@ public class DatabaseManager {
     }
 
     public void migrate() {
+        // First, create tables if they don't exist
+        try (Connection conn = dataSource.getConnection(); java.sql.Statement stmt = conn.createStatement()) {
+            stmt.execute("CREATE TABLE IF NOT EXISTS player_name (id INTEGER PRIMARY KEY AUTOINCREMENT, uuid VARCHAR(36) UNIQUE NOT NULL, last_known_name VARCHAR(255), last_join_at BIGINT, using_group_title_id INTEGER DEFAULT 0, skin_url TEXT, ui_preference VARCHAR(10) DEFAULT 'TUI')");
+            stmt.execute("CREATE TABLE IF NOT EXISTS dominion (id INTEGER PRIMARY KEY AUTOINCREMENT, owner VARCHAR(36) NOT NULL, name VARCHAR(255) NOT NULL, world_uid VARCHAR(36) NOT NULL, x1 INTEGER, y1 INTEGER, z1 INTEGER, x2 INTEGER, y2 INTEGER, z2 INTEGER, parent_dom_id INTEGER DEFAULT -1, join_message TEXT, leave_message TEXT, tp_location TEXT, color VARCHAR(20), server_id INTEGER DEFAULT 0, owner_glow BOOLEAN DEFAULT FALSE, env_flags TEXT DEFAULT '{}', guest_flags TEXT DEFAULT '{}')");
+            stmt.execute("CREATE TABLE IF NOT EXISTS dominion_member (id INTEGER PRIMARY KEY AUTOINCREMENT, player_uuid VARCHAR(36) NOT NULL, dom_id INTEGER NOT NULL, group_id INTEGER DEFAULT 0, flags TEXT DEFAULT '{}')");
+            stmt.execute("CREATE TABLE IF NOT EXISTS dominion_group (id INTEGER PRIMARY KEY AUTOINCREMENT, dom_id INTEGER NOT NULL, name VARCHAR(255), name_colored VARCHAR(255), flags TEXT DEFAULT '{}')");
+            stmt.execute("CREATE TABLE IF NOT EXISTS privilege_template (id INTEGER PRIMARY KEY AUTOINCREMENT, creator VARCHAR(36), name VARCHAR(255), flags TEXT DEFAULT '{}')");
+            stmt.execute("CREATE TABLE IF NOT EXISTS server_info (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255))");
+            stmt.execute("CREATE TABLE IF NOT EXISTS tp_cache (uuid VARCHAR(36) PRIMARY KEY, dom_id INTEGER)");
+            XLogger.info("Database tables created/verified.");
+        } catch (SQLException e) {
+            XLogger.warn("Table creation note: {0}", e.getMessage());
+        }
+
+        // Run Flyway for schema versioning
         Flyway.configure(Dominion.class.getClassLoader())
                 .dataSource(dataSource)
                 .baselineOnMigrate(true)
                 .baselineVersion("0")
-                .javaMigrations()
                 .load()
                 .migrate();
-        FlagReconciler.SyncResult result = new FlagReconciler(dataSource(), type).reconcile();
-        if (result.changedEntries() > 0) {
-            Dominion.LOGGER.info("Reconciled {} flag columns/values.", result.changedEntries());
+
+        // Reconcile flags
+        try {
+            FlagReconciler.SyncResult result = new FlagReconciler(dataSource(), type).reconcile();
+            if (result.changedEntries() > 0) {
+                XLogger.info("Reconciled {0} flag columns/values.", result.changedEntries());
+            }
+        } catch (Exception e) {
+            XLogger.warn("Flag reconciliation skipped: {0}", e.getMessage());
         }
     }
 

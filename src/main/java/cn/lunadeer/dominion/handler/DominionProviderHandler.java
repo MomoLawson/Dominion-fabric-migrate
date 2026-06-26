@@ -65,15 +65,37 @@ public class DominionProviderHandler extends DominionProvider {
                                                          @Nullable DominionDTO parent, boolean skipEconomy) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Asserts.assertDominionNameNotExists(name, owner);
-                DominionDOO toBeCreated = new DominionDOO();
+                // Validate name
+                if (name == null || name.isEmpty()) {
+                    throw new DominionException("Dominion name cannot be empty");
+                }
+                if (DominionDOO.nameExists(name, owner)) {
+                    throw new DominionException("Dominion name '" + name + "' already exists");
+                }
+
+                // Create dominion with all properties
+                Integer parentDomId = parent != null ? parent.getId() : -1;
+                DominionDOO toBeCreated = new DominionDOO(owner, name, worldUid, cuboid, parentDomId);
+
+                // Set default flags
+                for (EnvFlag flag : cn.lunadeer.dominion.api.dtos.flag.Flags.getAllEnvFlags()) {
+                    toBeCreated.setEnvFlagValue(flag, flag.getDefaultValue());
+                }
+                for (PriFlag flag : cn.lunadeer.dominion.api.dtos.flag.Flags.getAllPriFlags()) {
+                    toBeCreated.setGuestFlagValue(flag, flag.getDefaultValue());
+                }
+
+                // Insert into storage
                 DominionDTO inserted = DominionDOO.insert(toBeCreated);
                 if (inserted != null) {
                     Notification.info(operator, Language.dominionProviderHandlerText.createSuccess, name);
+                    XLogger.info("Dominion created: {0} by {1} at ({2},{3},{4})-({5},{6},{7})",
+                        name, owner, cuboid.x1(), cuboid.y1(), cuboid.z1(), cuboid.x2(), cuboid.y2(), cuboid.z2());
                 }
                 return inserted;
             } catch (Exception e) {
                 Notification.error(operator, Language.dominionProviderHandlerText.createFailed, name, e.getMessage());
+                XLogger.error("Failed to create dominion {0}: {1}", name, e.getMessage());
                 return null;
             }
         });
@@ -87,10 +109,43 @@ public class DominionProviderHandler extends DominionProvider {
                                                          int size) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Notification.info(operator, "Dominion " + type.name().toLowerCase() + " by " + size + " blocks");
+                if (operator.getPlayer() != null) Asserts.assertDominionOwner(operator.getPlayer(), dominion);
+
+                CuboidDTO oldCuboid = dominion.getCuboid();
+                int newX1 = oldCuboid.x1(), newY1 = oldCuboid.y1(), newZ1 = oldCuboid.z1();
+                int newX2 = oldCuboid.x2(), newY2 = oldCuboid.y2(), newZ2 = oldCuboid.z2();
+
+                boolean isExpand = type == DominionReSizeEvent.TYPE.EXPAND;
+                int delta = isExpand ? size : -size;
+
+                switch (direction) {
+                    case NORTH -> newZ1 -= delta;
+                    case SOUTH -> newZ2 += delta;
+                    case EAST -> newX2 += delta;
+                    case WEST -> newX1 -= delta;
+                    case UP -> newY2 += delta;
+                    case DOWN -> newY1 -= delta;
+                }
+
+                // Validate new size
+                if (newX2 <= newX1 || newY2 <= newY1 || newZ2 <= newZ1) {
+                    throw new DominionException("Cannot resize - dominion would be too small");
+                }
+
+                CuboidDTO newCuboid = new CuboidDTO(newX1, newY1, newZ1, newX2, newY2, newZ2);
+                dominion.setCuboid(newCuboid);
+
+                String action = isExpand ? "expanded" : "contracted";
+                Notification.info(operator, isExpand
+                    ? Language.dominionProviderHandlerText.expandSuccess
+                    : Language.dominionProviderHandlerText.contractSuccess, dominion.getName());
+                XLogger.info("Dominion {0} {1} by {2} blocks {3}", dominion.getName(), action, size, direction.name());
                 return dominion;
             } catch (Exception e) {
-                Notification.error(operator, e);
+                boolean isExpand = type == DominionReSizeEvent.TYPE.EXPAND;
+                Notification.error(operator, isExpand
+                    ? Language.dominionProviderHandlerText.expandFailed
+                    : Language.dominionProviderHandlerText.contractFailed, dominion.getName(), e.getMessage());
                 return null;
             }
         });
