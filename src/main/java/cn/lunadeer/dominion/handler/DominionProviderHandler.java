@@ -132,7 +132,26 @@ public class DominionProviderHandler extends DominionProvider {
                     throw new DominionException("Cannot resize - dominion would be too small");
                 }
 
+                // Size limit check
                 CuboidDTO newCuboid = new CuboidDTO(newX1, newY1, newZ1, newX2, newY2, newZ2);
+                long newVolume = (long)(newX2 - newX1) * (newY2 - newY1) * (newZ2 - newZ1);
+                if (newVolume > 100_000_000) { // 100M block limit
+                    throw new DominionException("Dominion too large (max 100M blocks)");
+                }
+
+                // Sub-dominion containment check
+                if (dominion.getParentDomId() != null && dominion.getParentDomId() > 0) {
+                    DominionDTO parent = CacheManager.instance.getDominion(dominion.getParentDomId());
+                    if (parent != null) {
+                        CuboidDTO parentCuboid = parent.getCuboid();
+                        if (newX1 < parentCuboid.x1() || newX2 > parentCuboid.x2()
+                            || newZ1 < parentCuboid.z1() || newZ2 > parentCuboid.z2()
+                            || newY1 < parentCuboid.y1() || newY2 > parentCuboid.y2()) {
+                            throw new DominionException("Cannot resize beyond parent dominion boundaries");
+                        }
+                    }
+                }
+
                 dominion.setCuboid(newCuboid);
 
                 String action = isExpand ? "expanded" : "contracted";
