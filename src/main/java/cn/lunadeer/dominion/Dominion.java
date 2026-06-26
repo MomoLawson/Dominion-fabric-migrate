@@ -87,6 +87,16 @@ public class Dominion implements ModInitializer {
             return;
         }
 
+        // Initialize cache
+        new cn.lunadeer.dominion.cache.CacheManager();
+        cn.lunadeer.dominion.cache.CacheManager.instance.load();
+
+        // Initialize event handlers
+        new cn.lunadeer.dominion.events.EventsRegister();
+
+        // Initialize provider
+        new cn.lunadeer.dominion.handler.DominionProviderHandler();
+
         XLogger.info(Language.dominionText.pluginVersion, getModVersion());
         XLogger.info(Language.dominionText.pluginEnabled);
     }

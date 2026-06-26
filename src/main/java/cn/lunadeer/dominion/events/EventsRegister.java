@@ -19,6 +19,7 @@ public class EventsRegister {
             new FlyGlowCheckHandler();
             new FlagRegisterHandler();
             new WorldLoadHandler();
+            FabricEventHandler.register();
             XLogger.info("All event handlers registered successfully");
         } catch (Exception e) {
             XLogger.error("Failed to register events: {0}", e.getMessage());

@@ -18,4 +18,5 @@ public class Asserts {
     public static void assertCanCreate(ServerPlayer p, CuboidDTO c, UUID w) throws DominionException {}
     public static void assertNotSubDominion(DominionDTO d) throws DominionException {}
     public static void assertSubDominion(DominionDTO d) throws DominionException {}
+    public static void assertDominionNameNotExists(String name, UUID owner) throws DominionException { if (cn.lunadeer.dominion.cache.CacheManager.instance.getDominion(name) != null) throw new DominionException("Dominion name already exists"); }
 }

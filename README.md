@@ -81,25 +81,25 @@ This is a **Fabric port** of the Dominion plugin. The core architecture has been
 ### Completed
 - [x] Project structure and build system (Gradle 9.5.1, Fabric Loom 1.17)
 - [x] Database/storage layer (HikariCP, MyBatis, Flyway)
-- [x] API DTOs and flag system
+- [x] API DTOs and flag system (all 30+ flags)
 - [x] Cache system with sector-based spatial indexing
 - [x] Configuration and language system (SnakeYAML)
-- [x] Command framework (Brigadier)
-- [x] Event handler framework
+- [x] Command framework (Brigadier) with full command registration
+- [x] Event handler framework with territory protection
 - [x] TUI framework (Text UI)
 - [x] CUI framework (Chest UI - basic)
 - [x] NMS/display entity system
-- [x] All source files migrated (223 Java files)
+- [x] All source files migrated (230+ Java files)
+- [x] DominionProvider with full CRUD operations
+- [x] Territory protection events (block break, place, use, PVP, etc.)
 
 ### In Progress / TODO
-- [ ] Full command implementations (currently stubbed)
-- [ ] All event handler registrations (currently stubbed)
 - [ ] Complete CUI integration
 - [ ] PlaceholderAPI integration (pb4)
-- [ ] Economy integration
+- [ ] Economy integration (Vault equivalent)
 - [ ] Residence migration
 - [ ] Multi-server support
-- [ ] Testing on live server
+- [ ] Server testing
 
 ## Credits
 

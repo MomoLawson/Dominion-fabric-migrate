@@ -46,4 +46,6 @@ public class DominionDOO implements DominionDTO {
     public Integer getServerId() { return 0; }
     public Boolean getOwnerGlow() { return ownerGlow; }
     public static List<DominionDOO> selectAll() { return new ArrayList<>(); }
+    public static DominionDTO insert(DominionDOO d) { return d; }
+    public static void deleteById(Integer id) {}
 }

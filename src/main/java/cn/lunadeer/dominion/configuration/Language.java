@@ -207,6 +207,7 @@ public class Language extends ConfigurationFile {
     public static Asserts.AssertsText assertsText = new Asserts.AssertsText();
     public static Converts.ConvertsText convertsText = new Converts.ConvertsText();
     public static Others.OthersText othersText = new Others.OthersText();
+    public static cn.lunadeer.dominion.handler.DominionProviderHandler.DominionProviderHandlerText dominionProviderHandlerText = new cn.lunadeer.dominion.handler.DominionProviderHandler.DominionProviderHandlerText();
 
     public static class SelectPointEventsHandlerText extends ConfigurationPart {
         public String noDominion = "No dominion found at your location ({0}, {1}, {2}).";
