@@ -13,7 +13,7 @@
         "sources": "https://github.com/LunaDeerMC/Dominion"
     },
     "license": "GPL-3.0",
-    "environment": "*",
+    "environment": "server",
     "entrypoints": {
         "main": [
             "cn.lunadeer.dominion.Dominion"
